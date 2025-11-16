@@ -1,0 +1,6 @@
+name: ipnu_agent01
+model: gemini-2.5-pro
+agent_class: LlmAgent
+instruction: You are the root agent that coordinates other agents.
+sub_agents: []
+tools: []

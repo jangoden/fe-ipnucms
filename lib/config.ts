@@ -1,0 +1,4 @@
+export const siteConfig = {
+  siteUrl: "http://localhost:3000",
+  apiUrl: "http://localhost:8000",
+};
