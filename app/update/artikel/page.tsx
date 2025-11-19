@@ -1,5 +1,5 @@
 
-import Breadcrumbs from "@/components/ui/Breadcrumbs";
+import PageHeader from "@/components/layout/PageHeader";
 import BlogList from "@/components/pages/BlogList";
 import Pagination from "@/components/ui/Pagination";
 import type { PostCardProps, NewsApiArticle } from "@/lib/types";
@@ -61,18 +61,18 @@ export default async function ArtikelPage({
     })
   );
 
-  const crumbs = [{ href: "/update/artikel", label: "Artikel" }];
+  const crumbs = [
+    { href: "/update", label: "Update" },
+    { href: "/update/artikel", label: "Artikel" }
+  ];
 
   return (
     <main className="relative isolate overflow-hidden bg-white">
-      <div className="bg-white py-8 text-center border-b border-gray-200">
-        <div className="container mx-auto px-6">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
-            Artikel Terbaru
-          </h1>
-          <Breadcrumbs crumbs={crumbs} />
-        </div>
-      </div>
+      <PageHeader 
+        title="Artikel Terbaru" 
+        backgroundImage="/images/head.webp" 
+        crumbs={crumbs} 
+      />
       <div className="mx-auto max-w-screen-xl px-6 lg:px-8 py-10 sm:py-14">
         <div className="flex justify-center mb-8">
           <div className="flex flex-wrap gap-2">

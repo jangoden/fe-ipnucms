@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Globe } from "lucide-react";
-// import Image from "next/image"; // Hapus kalau tidak dipakai
+// import Image from "next/image"; 
 
 export default function Hero() {
   return (
@@ -36,7 +36,8 @@ export default function Hero() {
           </span>
 
           {/* Headings */}
-          <h1 className="font-bold max-w-4xl">
+          {/* PERBAIKAN DI SINI: max-w-4xl dihapus agar bisa lebar penuh */}
+          <h1 className="font-bold w-full">
             <span
               className="block
               text-3xl
@@ -49,16 +50,30 @@ export default function Hero() {
               Selamat Datang di
             </span>
 
+            {/* PERBAIKAN DI SINI: whitespace-nowrap untuk 1 jajar & ukuran font disesuaikan */}
             <span
-              className="block mt-2
-              text-4xl
-              md:text-6xl
-              lg:text-7xl
-              xl:text-8xl
+              className="block mt-2 whitespace-nowrap
+              text-2xl      
+              sm:text-3xl
+              md:text-5xl
+              lg:text-6xl
+              xl:text-7xl
               text-emerald-800
               [font-family:'Mouse_Memoirs']"
             >
-              Website Official PC IPNU Ciamis
+              Pimpinan Cabang Ikatan Pelajar Nahdlatul Ulama
+            </span>
+            
+            <span
+              className="block mt-4
+              text-3xl
+              md:text-4xl
+              lg:text-5xl
+              xl:text-6xl
+              [font-family:'Bebas_Neue']"
+            >
+              <span className="text-emerald-800">Kabupaten</span>{' '}
+              <span className="text-purple-900">Ciamis</span>
             </span>
           </h1>
 

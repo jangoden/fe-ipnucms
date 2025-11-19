@@ -1,65 +1,152 @@
-// components/About.tsx
+// components/pages/About.tsx
 "use client";
-
+import Image from "next/image";
+import Link from "next/link";
 import {
+  ArrowRightIcon,
+  BookOpenIcon,
+  FlagIcon,
+  UserGroupIcon,
+  AcademicCapIcon,
   EyeIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 
-// Data untuk Visi dan Misi
-const visionMissionData = [
+const coreValues = [
   {
-    type: "Visi",
-    statement:
-      "Terwujudnya pelajar-pelajar bangsa yang bertaqwa kepada Allah SWT, berilmu, berakhlak mulia, dan berwawasan kebangsaan serta bertanggung jawab atas tegak dan berkembangnya syi'ar Islam Ahlussunnah wal Jamaah.",
-    icon: EyeIcon,
+    name: "Keislaman",
+    description:
+      "Menanamkan nilai-nilai Islam Ahlussunnah wal Jama'ah an-Nahdliyah.",
+    icon: BookOpenIcon,
   },
   {
-    type: "Misi",
-    statement:
-      "Menghimpun dan membina pelajar Nahdlatul Ulama dalam satu wadah organisasi, mempersiapkan kader-kader intelektual sebagai penerus perjuangan bangsa, dan berperan aktif dalam pembangunan nasional.",
-    icon: CheckCircleIcon,
+    name: "Kebangsaan",
+    description: "Memperkuat rasa cinta tanah air dan semangat nasionalisme.",
+    icon: FlagIcon,
+  },
+  {
+    name: "Keilmuan",
+    description:
+      "Mendorong budaya belajar, berpikir kritis, dan inovatif.",
+    icon: AcademicCapIcon,
+  },
+  {
+    name: "Kekaderan",
+    description:
+      "Mencetak kader pemimpin yang berintegritas dan kompeten.",
+    icon: UserGroupIcon,
   },
 ];
 
+const visionMissionData = [
+    {
+      type: "Visi",
+      statement:
+        "Terwujudnya pelajar-pelajar bangsa yang bertaqwa kepada Allah SWT, berilmu, berakhlak mulia, dan berwawasan kebangsaan serta bertanggung jawab atas tegak dan berkembangnya syi'ar Islam Ahlussunnah wal Jamaah.",
+      icon: EyeIcon,
+    },
+    {
+      type: "Misi",
+      statement:
+        "Menghimpun dan membina pelajar Nahdlatul Ulama dalam satu wadah organisasi, mempersiapkan kader-kader intelektual sebagai penerus perjuangan bangsa, dan berperan aktif dalam pembangunan nasional.",
+      icon: CheckCircleIcon,
+    },
+  ];
+
 export default function About() {
   return (
-    <section
-      id="about"
-      className="relative isolate overflow-hidden bg-gray-50 py-12 sm:py-16"
-    >
+    <section id="about" className="relative bg-gradient-to-b from-white to-emerald-50 py-16 sm:py-24">
       <div className="container mx-auto px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="font-semibold leading-7 text-emerald-600">
-            Tentang Kami
-          </p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Mengenal PC IPNU Ciamis
-          </h2>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
-            Ikatan Pelajar Nahdlatul Ulama (IPNU) adalah organisasi kaderisasi di bawah naungan Nahdlatul Ulama yang berfungsi sebagai wadah perjuangan, komunikasi, dan pengembangan potensi bagi pelajar NU di seluruh Indonesia, khususnya di Kabupaten Ciamis.
-          </p>
+        {/* Top Section: Intro */}
+        <div className="grid grid-cols-1 gap-y-16 gap-x-12 lg:grid-cols-2 lg:items-start">
+          {/* Kolom Kiri: Konten Teks */}
+          <div className="flex flex-col justify-center">
+            <p className="font-semibold leading-7 text-emerald-600">
+              Tentang Kami
+            </p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              Menempa Kader, Membangun Bangsa.
+            </h2>
+            <p className="mt-6 text-lg leading-8 text-gray-600">
+              PC IPNU Ciamis adalah wadah bagi para pelajar Nahdlatul Ulama untuk
+              mengembangkan potensi, memperkuat akidah Aswaja, dan menumbuhkan
+              jiwa kepemimpinan. Kami berkomitmen untuk melahirkan generasi
+              penerus yang tidak hanya cerdas secara intelektual, tetapi juga
+              memiliki akhlak mulia dan cinta tanah air.
+            </p>
+            {/* Tombol CTA */}
+            <div className="mt-10">
+                <Link href="/tentang" className="inline-flex items-center gap-x-2 rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">
+                    Jelajahi Lebih Lanjut
+                    <ArrowRightIcon className="h-4 w-4" />
+                </Link>
+            </div>
+          </div>
+
+          {/* Kolom Kanan: Gambar */}
+          <div className="flex items-center justify-center lg:justify-end">
+            <div className="w-full max-w-md lg:max-w-none">
+              <Image
+                src="/images/it-support-team.jpg"
+                alt="Tim PC IPNU Ciamis"
+                width={600}
+                height={600}
+                className="rounded-2xl object-cover shadow-xl ring-1 ring-gray-400/10"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Visi & Misi */}
-        <div className="mx-auto mt-16 max-w-4xl">
+        {/* Middle Section: Nilai-Nilai Inti */}
+        <div className="mt-24">
+            <h3 className="text-3xl font-bold text-center text-gray-900 sm:text-4xl">
+                Nilai-Nilai Inti Perjuangan Kami
+            </h3>
+            <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                {coreValues.map((value, index) => (
+                <div
+                    key={value.name}
+                    className="group transform rounded-xl border border-gray-100 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:bg-emerald-600 hover:border-emerald-600"
+                    data-aos="fade-up"
+                    data-aos-delay={index * 100}
+                >
+                    <div className="flex flex-col items-center text-center">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 transition-colors duration-300 group-hover:bg-white">
+                        <value.icon className="h-6 w-6 text-emerald-600 transition-colors duration-300 group-hover:text-emerald-600" aria-hidden="true" />
+                    </div>
+                    <h4 className="mt-5 text-lg font-semibold text-gray-900 transition-colors duration-300 group-hover:text-white">{value.name}</h4>
+                    <p className="mt-2 text-base text-gray-600 transition-colors duration-300 group-hover:text-white/90">{value.description}</p>
+                    </div>
+                </div>
+                ))}
+            </div>
+        </div>
+
+        {/* Bottom Section: Visi & Misi */}
+        <div className="mx-auto mt-24 max-w-5xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                Visi & Misi Kami
+            </h2>
+            <p className="mt-4 text-lg leading-8 text-gray-600">
+                Arah perjuangan kami dalam membentuk pelajar yang berkualitas dan berakhlakul karimah.
+            </p>
+        </div>
+        <div className="mx-auto mt-12 max-w-5xl">
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-2 lg:gap-y-16">
             {visionMissionData.map((item) => (
-              <div key={item.type} className="relative pl-16 transform transition-transform duration-300 hover:scale-105">
-                <dt className="text-base font-semibold leading-7 text-gray-900">
-                  <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-600">
-                    <item.icon className="h-6 w-6 text-white" aria-hidden="true" />
+              <div key={item.type} className="relative transform rounded-xl border border-gray-200 bg-gray-50/50 p-8 shadow-sm transition-transform duration-300 hover:scale-105 hover:bg-white">
+                <dt className="inline-flex items-center gap-x-3 text-xl font-semibold leading-7 text-gray-900">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-600">
+                    <item.icon className="h-7 w-7 text-white" aria-hidden="true" />
                   </div>
                   {item.type}
                 </dt>
-                <dd className="mt-2 text-base leading-7 text-gray-600">{item.statement}</dd>
+                <dd className="mt-4 text-base leading-7 text-gray-600">{item.statement}</dd>
               </div>
             ))}
           </dl>
         </div>
-      </div>
-      <div className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
-        <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#80ff80] to-[#008000] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" style={{ clipPath: 'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)' }}></div>
+
       </div>
     </section>
   );

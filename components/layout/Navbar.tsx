@@ -40,7 +40,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false); // Mobile menu open state
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null); // Track which dropdown is open
-  const navRef = useRef<HTMLElement>(null); // Satu ref untuk seluruh nav desktop
+  const navRef = useRef<HTMLElement>(null); // Ref for desktop nav to handle outside clicks
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -53,21 +53,6 @@ export default function Navbar() {
     setOpen(false); // Close mobile menu on route change
     setDropdownOpen(null); // Close dropdowns on route change
   }, [pathname]);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (!dropdownOpen) return;
-      if (navRef.current && !navRef.current.contains(event.target as Node)) {
-        setDropdownOpen(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownOpen]);
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -92,7 +77,7 @@ export default function Navbar() {
         <Link
           href="/"
           aria-label="Beranda"
-          className="flex shrink-0 items-center gap-2 transition-opacity duration-200 hover:opacity-80" // <-- [PENYESUAIAN 3]
+          className="flex shrink-0 items-center gap-2 transition-opacity duration-200 hover:opacity-80"
         >
           <Image
             src="/images/logo.svg"
@@ -103,94 +88,101 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Desktop nav */}
-        <nav
-          ref={navRef}
-          className="hidden items-center gap-1 md:flex" // <-- [PENYESUAIAN 4]
-          aria-label="Navigasi Utama"
-        >
-          {navLinks.map((link) =>
-            link.children ? (
-              <div key={link.name} className="relative">
-                <button
-                  onClick={() => handleDropdownToggle(link.name)}
+        {/* Right-aligned group: Desktop nav, CTA, and mobile toggle */}
+        <div className="flex items-center gap-3">
+          {/* Desktop nav */}
+          <nav
+            ref={navRef}
+            className="hidden items-center gap-1 md:flex"
+            aria-label="Navigasi Utama"
+          >
+            {navLinks.map((link) =>
+              link.children ? (
+                <div 
+                  key={link.name} 
+                  className="relative"
+                  onMouseEnter={() => setDropdownOpen(link.name)}
+                  onMouseLeave={() => setDropdownOpen(null)}
+                >
+                  <button
+                    className={clsx(
+                      "flex items-center",
+                      "relative rounded-full px-4 py-2 text-sm transition-all duration-200",
+                      "outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/50",
+                      isActive(link.href) ||
+                        link.children.some((child) => isActive(child.href)) ||
+                        dropdownOpen === link.name
+                        ? "bg-white text-emerald-900 font-semibold"
+                        : "text-white/90 hover:text-white hover:bg-white/15"
+                    )}
+                  >
+                    {link.name}
+                    <svg
+                      className={clsx(
+                        "ml-2 h-4 w-4 transform transition-transform duration-200",
+                        dropdownOpen === link.name ? "rotate-180" : "rotate-0"
+                      )}
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  {dropdownOpen === link.name && (
+                    <div className="absolute left-0 top-full pt-2 w-48 rounded-lg bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none overflow-hidden animate-fade-in-up">
+                      <div className="py-1">
+                        {link.children.map((childLink) => (
+                          <Link
+                            key={childLink.name}
+                            href={childLink.href}
+                            className={clsx(
+                              "block px-4 py-2 text-sm text-gray-700 transition-colors duration-200 hover:bg-emerald-100 hover:text-emerald-800",
+                              isActive(childLink.href) &&
+                                "bg-emerald-50 font-semibold text-emerald-700"
+                            )}
+                            onClick={() => setDropdownOpen(null)}
+                          >
+                            {childLink.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={link.name}
+                  href={link.href}
                   className={clsx(
-                    "flex items-center",
                     "relative rounded-full px-4 py-2 text-sm transition-all duration-200",
                     "outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/50",
-                    isActive(link.href) ||
-                      link.children.some((child) => isActive(child.href)) ||
-                      dropdownOpen === link.name
+                    isActive(link.href)
                       ? "bg-white text-emerald-900 font-semibold"
                       : "text-white/90 hover:text-white hover:bg-white/15"
                   )}
                 >
                   {link.name}
-                  <svg
-                    className={clsx(
-                      "ml-2 h-4 w-4 transform transition-transform duration-200",
-                      dropdownOpen === link.name ? "rotate-180" : "rotate-0"
-                    )}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </button>
-                {dropdownOpen === link.name && (
-                  <div className="absolute left-0 top-full mt-2 w-48 rounded-lg bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none overflow-hidden animate-fade-in-up">
-                    <div className="py-1">
-                      {link.children.map((childLink) => (
-                        <Link
-                          key={childLink.name}
-                          href={childLink.href}
-                          className={clsx(
-                            "block px-4 py-2 text-sm text-gray-700 transition-colors duration-200 hover:bg-emerald-100 hover:text-emerald-800",
-                            isActive(childLink.href) &&
-                              "bg-emerald-50 font-semibold text-emerald-700"
-                          )}
-                          onClick={() => setDropdownOpen(null)}
-                        >
-                          {childLink.name}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={clsx(
-                  "relative rounded-full px-4 py-2 text-sm transition-all duration-200",
-                  "outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/50",
-                  isActive(link.href)
-                    ? "bg-white text-emerald-900 font-semibold"
-                    : "text-white/90 hover:text-white hover:bg-white/15"
-                )}
-              >
-                {link.name}
-              </Link>
-            )
-          )}
-        </nav>
+                </Link>
+              )
+            )}
+          </nav>
 
-        {/* CTA + tombol mobile */}
-        <div className="flex items-center gap-3">
+          {/* CTA (Sirekan button) */}
           <Link
             href="#"
             className="px-4 py-2 rounded-full bg-white text-emerald-800 font-semibold hover:bg-emerald-100 transition-colors duration-200 hidden sm:flex"
           >
             Sirekan
           </Link>
+          
+          {/* Mobile toggle */}
           <button
             aria-label={open ? "Tutup menu" : "Buka menu"}
             aria-expanded={open}
@@ -236,7 +228,7 @@ export default function Navbar() {
         />
         <div
           className={clsx(
-            "absolute left-0 top-full z-50 w-full origin-top bg-emerald-800 text-white shadow-xl transition-transform duration-300", // <-- [PENYESUAIAN 1 & 2]
+            "absolute left-0 top-full z-50 w-full origin-top bg-emerald-800 text-white shadow-xl transition-transform duration-300",
             open ? "scale-y-100" : "scale-y-0"
           )}
         >
