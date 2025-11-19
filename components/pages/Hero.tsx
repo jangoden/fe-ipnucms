@@ -4,7 +4,10 @@ import { Globe } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="bg-white overflow-hidden h-[100dvh] min-h-max flex items-center relative">
+    <section
+      className="bg-white overflow-hidden h-[100dvh] min-h-max flex items-center relative bg-cover bg-center"
+      style={{ backgroundImage: "url('/bg-hero.webp')" }}
+    >
       <div className="absolute inset-0 bg-white/70 z-0" />
       {/* Background decorative elements */}
       <div className="absolute top-0 left-0 -translate-x-[54%] -translate-y-[70%] w-2/5 rounded-full aspect-square bg-emerald-600/70 backdrop-filter blur-3xl opacity-50" />
@@ -92,11 +95,7 @@ export default function Hero() {
 
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 w-full h-20">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,80 C320,160 1120,0 1440,80 V120 H0 Z" fill="white"/>
-        </svg>
-      </div>
+
     </section>
   );
 }

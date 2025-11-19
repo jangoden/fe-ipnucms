@@ -9,8 +9,7 @@ import Hero from "@/components/pages/Hero";
 import About from "@/components/pages/About";
 import Programs from "@/components/pages/Programs";
 import Gallery from "@/components/pages/Gallery";
-import Contact from "@/components/pages/Contact";
-
+import CtaSection from "@/components/pages/CtaSection";
 
 export default function Home() {
   useEffect(() => {
@@ -29,7 +28,7 @@ export default function Home() {
       <Programs />
 
       <Gallery />
-      <Contact />
+      <CtaSection />
     </main>
   );
 }

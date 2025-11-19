@@ -6,53 +6,26 @@ import { useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useEffect, useState } from "react";
+import BlogSidebar from "@/components/blog/BlogSidebar"; // 1. Import Sidebar
+import {
+  FacebookIcon,
+  TwitterIcon,
+  LinkedinIcon,
+  LinkIcon,
+} from "lucide-react";
 
-type TocItem = {
-  level: number;
-  text: string;
-  id: string;
-};
-
-const generateToc = (markdown: string): TocItem[] => {
-  const headings: TocItem[] = [];
-  if (!markdown) return headings;
-  const lines = markdown.split("\n");
-  lines.forEach((line, index) => {
-    const match = line.match(/^(#+)\s+(.*)/);
-    if (match) {
-      const level = match[1].length;
-      const text = match[2];
-      const id = `heading-${index}`;
-      headings.push({ level, text, id });
-    }
-  });
-  return headings;
-};
-
-const addIdsToHeadings = (markdown: string): string => {
-  if (!markdown) return "";
-  let index = 0;
-  return markdown.replace(/^(#+)\s+(.*)/gm, (match, hashes, text) => {
-    const id = `heading-${index++}`;
-    return `${hashes} <a id="${id}"></a>${text}`;
-  });
-};
+// 2. TOC logic is removed.
 
 export default function ArtikelDetailPage() {
   const searchParams = useSearchParams();
   const postString = searchParams.get("post");
   const [post, setPost] = useState<PostCardProps | null>(null);
-  const [toc, setToc] = useState<TocItem[]>([]);
-  const [contentWithIds, setContentWithIds] = useState<string>("");
 
   useEffect(() => {
     if (postString) {
       try {
         const parsedPost: PostCardProps = JSON.parse(postString);
         setPost(parsedPost);
-        const tocItems = generateToc(parsedPost.content || "");
-        setToc(tocItems);
-        setContentWithIds(addIdsToHeadings(parsedPost.content || ""));
       } catch (error) {
         console.error("Failed to parse post data:", error);
       }
@@ -69,80 +42,71 @@ export default function ArtikelDetailPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="max-w-5xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-              {post.title}
-            </h1>
-            <div className="mt-4 flex justify-center items-center space-x-4 text-gray-500">
-              <span>By {post.author.name}</span>
-              <span>&middot;</span>
-              <time dateTime={post.date}>
-                {new Date(post.date).toLocaleDateString("id-ID", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </time>
-            </div>
-          </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        {/* 3. New Two-Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+          
+          {/* Left Column: Article */}
+          <main className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              {/* Featured Image */}
+              <div className="relative h-64 sm:h-80 md:h-96 w-full">
+                <Image
+                  src={post.imageUrl}
+                  alt={post.title}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </div>
 
-          {/* Image */}
-          <div className="relative h-96 w-full rounded-lg overflow-hidden mb-8">
-            <Image
-              src={post.imageUrl}
-              alt={post.title}
-              layout="fill"
-              objectFit="cover"
-            />
-          </div>
-
-          {/* Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Table of Contents */}
-            <div className="lg:col-span-3">
-              {toc.length > 0 && (
-                <div className="sticky top-24 p-4 bg-white rounded-lg shadow-sm">
-                  <h3 className="text-xl font-semibold mb-4">Daftar Isi</h3>
-                  <ul className="space-y-2">
-                    {toc.map((item) => (
-                      <li key={item.id}>
-                        <a
-                          href={`#${item.id}`}
-                          className={`block text-gray-600 hover:text-primary-light transition-colors duration-200 ml-${(item.level - 1) * 2}`}>
-                          {item.text}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
+              <div className="p-6 sm:p-8">
+                {/* Header */}
+                <div className="mb-6">
+                  <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight">
+                    {post.title}
+                  </h1>
+                  <div className="mt-3 flex items-center space-x-4 text-sm text-gray-500">
+                    <span>By {post.author.name}</span>
+                    <span>&middot;</span>
+                    <time dateTime={post.date}>
+                      {new Date(post.date).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </time>
+                  </div>
                 </div>
-              )}
-            </div>
 
-            {/* Article Content */}
-            <div className="lg:col-span-9">
-              <div className="prose prose-lg max-w-none bg-white p-6 rounded-lg shadow-sm">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {contentWithIds}
-                </ReactMarkdown>
-                <div className="mt-8 border-t pt-4">
-                  <p className="text-gray-600">
-                    Artikel ini adalah ringkasan. Untuk membaca versi lengkapnya, silakan kunjungi sumber aslinya.
-                  </p>
-                  <Link
-                    href={post.slug}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block mt-2 text-primary hover:text-primary-dark font-semibold"
-                  >
-                    Baca Selengkapnya &rarr;
-                  </Link>
+                {/* Article Content */}
+                <div className="prose prose-lg max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {post.content || ""}
+                  </ReactMarkdown>
+                </div>
+
+                {/* Share Section */}
+                <div className="mt-8 border-t pt-6">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                    Bagikan Artikel
+                  </h3>
+                  <div className="flex items-center space-x-4">
+                    <a href="#" className="text-gray-500 hover:text-blue-600"><FacebookIcon size={24} /></a>
+                    <a href="#" className="text-gray-500 hover:text-sky-500"><TwitterIcon size={24} /></a>
+                    <a href="#" className="text-gray-500 hover:text-blue-700"><LinkedinIcon size={24} /></a>
+                    <button className="text-gray-500 hover:text-emerald-600"><LinkIcon size={24} /></button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </main>
+
+          {/* Right Column: Sidebar */}
+          <aside className="lg:col-span-1">
+            <div className="sticky top-24">
+              <BlogSidebar />
+            </div>
+          </aside>
         </div>
       </div>
     </div>

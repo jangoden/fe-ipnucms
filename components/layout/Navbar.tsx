@@ -80,35 +80,33 @@ export default function Navbar() {
 
   return (
     <header
-  className={clsx(
-    "fixed inset-x-0 top-0 z-50 transition-all duration-300", // <-- h-[var(--header-h)] DIHAPUS
-    scrolled
-      ? "bg-emerald-800/95 backdrop-blur-md shadow-md border-b border-black/10"
-      : "bg-emerald-700/95 backdrop-blur-md"
-  )}
->
-  <div className="mx-auto flex max-w-7xl items-center justify-between px-3 sm:px-6 py-3"> 
-  {/* ^^^^^ h-full DIHAPUS, py-3 DITAMBAHKAN                 ^^^^ */}
-    
-    {/* Logo */}
-    <Link
-      href="/"
-      aria-label="Beranda"
-      className="flex shrink-0 items-center gap-2"
+      className={clsx(
+        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        scrolled
+          ? "bg-emerald-800/95 backdrop-blur-md shadow-md border-b border-black/10"
+          : "bg-emerald-700/95 backdrop-blur-md"
+      )}
     >
-      <Image
-        src="/images/logo.svg"
-        alt="Logo PC IPNU CIAMIS"
-        width={30}  // Sesuaikan
-        height={30} // Sesuaikan
-        className="h-9 w-auto" // Coba h-9 (36px)
-      />
-      </Link>
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-3 sm:px-6 py-3">
+        {/* Logo */}
+        <Link
+          href="/"
+          aria-label="Beranda"
+          className="flex shrink-0 items-center gap-2 transition-opacity duration-200 hover:opacity-80" // <-- [PENYESUAIAN 3]
+        >
+          <Image
+            src="/images/logo.svg"
+            alt="Logo PC IPNU CIAMIS"
+            width={30}
+            height={30}
+            className="h-9 w-auto"
+          />
+        </Link>
 
         {/* Desktop nav */}
         <nav
           ref={navRef}
-          className="hidden items-center gap-2 md:flex" // <-- SUDAH DIUPDATE (Container pil dihilangkan)
+          className="hidden items-center gap-1 md:flex" // <-- [PENYESUAIAN 4]
           aria-label="Navigasi Utama"
         >
           {navLinks.map((link) =>
@@ -117,12 +115,12 @@ export default function Navbar() {
                 <button
                   onClick={() => handleDropdownToggle(link.name)}
                   className={clsx(
-                    "flex items-center", // <-- DIUPDATE: Menjajarkan teks dan panah
+                    "flex items-center",
                     "relative rounded-full px-4 py-2 text-sm transition-all duration-200",
                     "outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/50",
-                    (isActive(link.href) ||
+                    isActive(link.href) ||
                       link.children.some((child) => isActive(child.href)) ||
-                      dropdownOpen === link.name)
+                      dropdownOpen === link.name
                       ? "bg-white text-emerald-900 font-semibold"
                       : "text-white/90 hover:text-white hover:bg-white/15"
                   )}
@@ -130,7 +128,7 @@ export default function Navbar() {
                   {link.name}
                   <svg
                     className={clsx(
-                      "ml-2 h-4 w-4 transform transition-transform duration-200", // <-- DIUPDATE: 'inline-block' dihapus
+                      "ml-2 h-4 w-4 transform transition-transform duration-200",
                       dropdownOpen === link.name ? "rotate-180" : "rotate-0"
                     )}
                     xmlns="http://www.w3.org/2000/svg"
@@ -187,8 +185,12 @@ export default function Navbar() {
 
         {/* CTA + tombol mobile */}
         <div className="flex items-center gap-3">
-
-
+          <Link
+            href="#"
+            className="px-4 py-2 rounded-full bg-white text-emerald-800 font-semibold hover:bg-emerald-100 transition-colors duration-200 hidden sm:flex"
+          >
+            Sirekan
+          </Link>
           <button
             aria-label={open ? "Tutup menu" : "Buka menu"}
             aria-expanded={open}
@@ -234,7 +236,7 @@ export default function Navbar() {
         />
         <div
           className={clsx(
-            "absolute left-0 top-[var(--header-h)] z-50 w-full origin-top bg-emerald-700 text-white shadow-xl transition-transform duration-300",
+            "absolute left-0 top-full z-50 w-full origin-top bg-emerald-800 text-white shadow-xl transition-transform duration-300", // <-- [PENYESUAIAN 1 & 2]
             open ? "scale-y-100" : "scale-y-0"
           )}
         >
@@ -314,7 +316,6 @@ export default function Navbar() {
                 </Link>
               )
             )}
-
           </nav>
         </div>
       </div>
