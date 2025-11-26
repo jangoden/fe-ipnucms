@@ -12,6 +12,7 @@ import Programs from "@/components/pages/Programs";
 import LatestBlog from "@/components/pages/LatestBlog"; // New import
 import Gallery from "@/components/pages/Gallery";
 import CtaSection from "@/components/pages/CtaSection";
+import Stats from "@/components/pages/Stats";
 
 export default function Home() {
   useEffect(() => {
@@ -26,6 +27,7 @@ export default function Home() {
   return (
     <main>
       <Hero />
+      <Stats />
       <About />
       <CadreDatabase />
       <Programs />
