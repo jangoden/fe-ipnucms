@@ -1,70 +1,95 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/config";
 
-// Fungsi untuk mengambil semua postingan dari API
-async function getAllPosts(): Promise<{ slug: string; updated_at: string }[]> {
+type ApiItem = {
+  slug: string;
+  updated_at?: string | null;
+};
+
+// Helper umum supaya DRY
+async function fetchApi<T extends ApiItem>(path: string): Promise<T[]> {
+  // Kalau apiUrl belum diset, jangan coba fetch apa-apa
+  if (!siteConfig.apiUrl) return [];
+
   try {
-    const res = await fetch(`${siteConfig.apiUrl}/api/v1/posts`, {
-      next: { revalidate: 3600 }, // Revalidasi setiap jam
+    const res = await fetch(`${siteConfig.apiUrl}${path}`, {
+      // sitemap tidak perlu super real-time, 1 jam cukup
+      next: { revalidate: 3600 },
     });
+
     if (!res.ok) return [];
-    const data = await res.json();
-    return data.data || [];
+
+    const json = await res.json();
+    return Array.isArray(json.data) ? (json.data as T[]) : [];
   } catch (error) {
-    console.error("Failed to fetch posts for sitemap:", error);
+    // Biar nggak spam log di production
+    if (process.env.NODE_ENV === "development") {
+      console.error(`Failed to fetch ${path} for sitemap:`, error);
+    }
     return [];
   }
 }
 
-// Fungsi untuk mengambil semua template dari API
-async function getAllTemplates(): Promise<{ slug: string; updated_at: string }[]> {
-  try {
-    const res = await fetch(`${siteConfig.apiUrl}/api/v1/templates`, {
-      next: { revalidate: 3600 }, // Revalidasi setiap jam
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.data || [];
-  } catch (error) {
-    console.error("Failed to fetch templates for sitemap:", error);
-    return [];
-  }
+function toValidDate(dateString?: string | null): Date | undefined {
+  if (!dateString) return undefined;
+  const d = new Date(dateString);
+  return Number.isNaN(d.getTime()) ? undefined : d;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = siteConfig.siteUrl || "http://localhost:3000";
+  const baseUrl = siteConfig.siteUrl ?? "http://localhost:3000";
 
-  // 1. Ambil data dinamis
-  const posts = await getAllPosts();
-  const templates = await getAllTemplates();
+  // Ambil posts & templates secara paralel
+  const [posts, templates] = await Promise.all([
+    fetchApi<ApiItem>("/api/v1/posts"),
+    fetchApi<ApiItem>("/api/v1/templates"),
+  ]);
 
-  const makeUrl = (path: string, updated_at?: string) => {
-    const item: { url: string; lastModified?: Date } = { url: path };
-    if (updated_at) {
-      const d = new Date(updated_at);
-      if (!isNaN(d.getTime())) {
-        item.lastModified = d;
-      }
-    }
-    return item;
-  };
-
-  const postUrls = posts.map((post) =>
-    makeUrl(`${baseUrl}/blog/${post.slug}`, post.updated_at)
-  );
-
-  const templateUrls = templates.map((template) =>
-    makeUrl(`${baseUrl}/templates/${template.slug}`, template.updated_at)
-  );
-
-  // 2. Definisikan halaman statis
-  const staticPages = [
-    { url: baseUrl, lastModified: new Date() },
-    { url: `${baseUrl}/services`, lastModified: new Date() },
-    { url: `${baseUrl}/templates`, lastModified: new Date() },
-    { url: `${baseUrl}/contact`, lastModified: new Date() },
+  // Halaman statis utama
+  const staticPages: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 1,
+    },
+    {
+      url: `${baseUrl}/services`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/templates`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.5,
+    },
   ];
 
-  // 3. Gabungkan semua URL
+  // SESUAIKAN route di bawah ini dengan struktur app kamu.
+  // Kalau di proyek kamu route-nya `/update/artikel/[slug]`,
+  // ubah `/blog/` jadi `/update/artikel/`
+  const postUrls: MetadataRoute.Sitemap = posts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    // atau: `${baseUrl}/update/artikel/${post.slug}`,
+    lastModified: toValidDate(post.updated_at),
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
+  const templateUrls: MetadataRoute.Sitemap = templates.map((template) => ({
+    url: `${baseUrl}/templates/${template.slug}`,
+    lastModified: toValidDate(template.updated_at),
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
+
   return [...staticPages, ...postUrls, ...templateUrls];
 }
