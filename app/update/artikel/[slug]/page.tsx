@@ -1,27 +1,19 @@
-'use client'
-import PageHeader from "@/components/layout/PageHeader";
-import { PostCardProps } from "@/lib/types";
-import Image from "next/image";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+'use client';
+
 import { useEffect, useState } from "react";
-import BlogSidebar from "@/components/blog/BlogSidebar"; // 1. Import Sidebar
+import { useSearchParams } from "next/navigation";
+import { PostCardProps } from "@/lib/types";
+
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
-import {
-  FacebookIcon,
-  TwitterIcon,
-  LinkedinIcon,
-  LinkIcon,
-} from "lucide-react";
+import PostHeader from "@/components/blog/post-header";
+import PostBody from "@/components/blog/post-body";
+import PostFooter from "@/components/blog/post-footer";
 
-// 2. TOC logic is removed.
-
-export default function ArtikelDetailPage() {
+function ArticlePageContent() {
   const searchParams = useSearchParams();
   const postString = searchParams.get("post");
   const [post, setPost] = useState<PostCardProps | null>(null);
+  const [shareUrl, setShareUrl] = useState("");
 
   useEffect(() => {
     if (postString) {
@@ -32,93 +24,100 @@ export default function ArtikelDetailPage() {
         console.error("Failed to parse post data:", error);
       }
     }
+    if (typeof window !== "undefined") {
+      setShareUrl(window.location.href);
+    }
   }, [postString]);
 
   if (!post) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-lg font-semibold">Memuat artikel...</div>
+      <div className="min-h-screen flex justify-center items-center bg-gray-50">
+        <div className="text-lg font-semibold text-gray-500">
+          Memuat artikel...
+        </div>
       </div>
     );
   }
 
   const crumbs = [
     { href: "/update/artikel", label: "Artikel" },
-    { href: `/update/artikel/${post.slug}`, label: post.title.substring(0, 30) + '...' }, // Truncate long titles
+    {
+      href: `/update/artikel/${post.slug}`,
+      label: post.title.substring(0, 30) + "...",
+    },
   ];
 
   return (
-    <>
-      {/* Article Header with Background */}
-      <div 
-        className="relative h-80 sm:h-96 flex items-center justify-center bg-cover bg-center"
-        style={{ backgroundImage: `url(${post.imageUrl || '/images/head.webp'})` }}
-      >
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="relative z-10 text-center text-white px-4 max-w-4xl">
-              <h1 className="text-3xl md:text-5xl font-extrabold leading-tight tracking-tight">
-                  {post.title}
-              </h1>
-              <div className="mt-4">
-                <Breadcrumbs crumbs={crumbs} />
-              </div>
+    <div className="min-h-screen bg-white py-10">
+      <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-4 lg:px-0">
+        
+        {/* SIDEBAR KIRI - Now Sticky */}
+        <aside className="md:col-span-1 space-y-8 self-start sticky top-24">
+          {/* Breadcrumbs moved to sidebar */}
+          <Breadcrumbs crumbs={crumbs} className="text-base text-gray-900 mb-6" />
+
+          {/* Categories */}
+          <div className="bg-gray-50 p-4 rounded-lg shadow-sm border">
+            <h3 className="text-lg font-semibold mb-3 border-b border-gray-200 pb-2 text-gray-900">
+              Kategori
+            </h3>
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li className="hover:text-emerald-600 cursor-pointer">Berita</li>
+              <li className="hover:text-emerald-600 cursor-pointer">Opini</li>
+              <li className="hover:text-emerald-600 cursor-pointer">Kaderisasi</li>
+              <li className="hover:text-emerald-600 cursor-pointer">Teknologi</li>
+            </ul>
           </div>
-      </div>
 
-      <div className="bg-gray-50 min-h-screen">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 -mt-32">
-          {/* New Two-Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-            
-            {/* Left Column: Article */}
-            <main className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="p-6 sm:p-8">
-                  {/* Meta Info */}
-                  <div className="mb-6 flex items-center space-x-4 text-sm text-gray-500">
-                    <span>By {post.author.name}</span>
-                    <span>&middot;</span>
-                    <time dateTime={post.date}>
-                      {new Date(post.date).toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </time>
-                  </div>
+          {/* Related Posts */}
+          <div className="bg-gray-50 p-4 rounded-lg shadow-sm border">
+            <h3 className="text-lg font-semibold mb-3 border-b border-gray-200 pb-2 text-gray-900">
+              Artikel Terkait
+            </h3>
 
-                  {/* Article Content */}
-                  <div className="prose prose-lg max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {post.content || ""}
-                    </ReactMarkdown>
-                  </div>
-
-                  {/* Share Section */}
-                  <div className="mt-8 border-t pt-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                      Bagikan Artikel
-                    </h3>
-                    <div className="flex items-center space-x-4">
-                      <a href="#" className="text-gray-500 hover:text-blue-600"><FacebookIcon size={24} /></a>
-                      <a href="#" className="text-gray-500 hover:text-sky-500"><TwitterIcon size={24} /></a>
-                      <a href="#" className="text-gray-500 hover:text-blue-700"><LinkedinIcon size={24} /></a>
-                      <button className="text-gray-500 hover:text-emerald-600"><LinkIcon size={24} /></button>
-                    </div>
-                  </div>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3 group">
+                <div className="w-16 h-12 rounded overflow-hidden bg-gray-200">
+                  <img
+                    src={post.imageUrl || "/images/placeholder-template.png"}
+                    alt={post.title}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
+                <p className="text-sm text-gray-700 group-hover:text-emerald-600 cursor-pointer line-clamp-2">
+                  {post.title}
+                </p>
               </div>
-            </main>
-
-            {/* Right Column: Sidebar */}
-            <aside className="lg:col-span-1">
-              <div className="sticky top-24">
-                <BlogSidebar />
+              {/* Dummy related post */}
+               <div className="flex items-center space-x-3 group">
+                <div className="w-16 h-12 rounded overflow-hidden bg-gray-200">
+                  <img
+                    src={"/images/placeholder-template.png"}
+                    alt={"Contoh artikel lain"}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-sm text-gray-700 group-hover:text-emerald-600 cursor-pointer line-clamp-2">
+                  Memaknai Trilogi Belajar, Berjuang, Bertaqwa di Era Digital
+                </p>
               </div>
-            </aside>
+            </div>
           </div>
-        </div>
+        </aside>
+
+        {/* KONTEN UTAMA */}
+        <main className="md:col-span-3 rounded-lg p-6 lg:p-8">
+            <div className="space-y-8">
+                <PostHeader post={post} />
+                <PostBody post={post} />
+                <PostFooter post={post} shareUrl={shareUrl} />
+            </div>
+        </main>
       </div>
-    </>
+    </div>
   );
+}
+
+export default function ArtikelDetailPage() {
+  return <ArticlePageContent />;
 }

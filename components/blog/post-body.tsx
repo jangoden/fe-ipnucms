@@ -1,7 +1,8 @@
 // components/blog/post-body.tsx
-
 import Image from "next/image";
 import { PostCardProps } from "@/lib/types";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface PostBodyProps {
   post: PostCardProps;
@@ -9,28 +10,27 @@ interface PostBodyProps {
 
 export default function PostBody({ post }: PostBodyProps) {
   return (
-    <div className="mt-8">
-      {/* Gambar Utama Artikel (di luar bingkai) */}
+    <article>
+      {/* Featured Image */}
       {post.imageUrl && (
-        <div className="relative mb-10 h-64 w-full md:h-96">
+        <figure className="my-8">
           <Image
             src={post.imageUrl}
             alt={post.title}
-            fill
-            className="rounded-xl object-cover"
+            width={1200}
+            height={675}
+            className="w-full h-auto rounded-2xl bg-gray-100 object-cover shadow-lg"
             priority
           />
-        </div>
+        </figure>
       )}
 
-      {/* [PERUBAHAN] Menambahkan div pembungkus untuk bingkai */}
-      <div className="rounded-2xl border border-gray-200 p-6 shadow-sm md:p-8">
-        {/* Konten Artikel dari CMS/API dengan styling 'prose' */}
-        <div
-          className="prose prose-lg max-w-prose prose-a:text-green-600"
-          dangerouslySetInnerHTML={{ __html: post.content || "" }}
-        />
+      {/* Article Content */}
+      <div className="prose prose-lg lg:prose-xl max-w-none mx-auto prose-emerald">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {post.content || ""}
+        </ReactMarkdown>
       </div>
-    </div>
+    </article>
   );
 }

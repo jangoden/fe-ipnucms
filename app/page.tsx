@@ -7,7 +7,6 @@ import "aos/dist/aos.css";
 
 import Hero from "@/components/pages/Hero";
 import About from "@/components/pages/About";
-import CadreDatabase from "@/components/pages/CadreDatabase";
 import Programs from "@/components/pages/Programs";
 import LatestBlog from "@/components/pages/LatestBlog"; // New import
 import Gallery from "@/components/pages/Gallery";
@@ -29,10 +28,8 @@ export default function Home() {
       <Hero />
       <Stats />
       <About />
-      <CadreDatabase />
       <Programs />
-      <LatestBlog /> {/* New component */}
-
+      <LatestBlog />
       <Gallery />
       <CtaSection />
     </main>

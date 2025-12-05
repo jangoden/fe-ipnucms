@@ -16,7 +16,7 @@ export default function BlogList({ posts }: BlogListProps) {
   const filteredPosts = posts;
 
   return (
-<section id="blog" className="bg-white py-20 sm:py-28">
+<section id="blog" className="bg-gray-50 py-20 sm:py-28">
       <div className="container mx-auto px-6">
         <div className="flex justify-between items-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Berita Terbaru</h2>

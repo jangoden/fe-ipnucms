@@ -112,7 +112,7 @@ export default function PostFooter({ post, shareUrl }: PostFooterProps) {
       {/* Kembali */}
       <div className="mt-8 flex justify-center">
         <Link
-          href="/blog"
+          href="/update/artikel"
           className="inline-flex items-center gap-x-2 rounded-lg border border-gray-300 px-5 py-3 font-semibold text-gray-700 transition hover:border-gray-800 hover:bg-gray-800 hover:text-white"
         >
           <ArrowLeftIcon className="h-5 w-5" />

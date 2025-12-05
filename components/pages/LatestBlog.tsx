@@ -19,8 +19,8 @@ function slugify(text: string) {
 
 export default function LatestBlog() {
     const [posts, setPosts] = useState<PostCardProps[]>([]);
-    const [loading, setLoading] = useState(true); // Add loading state
-    const [error, setError] = useState<string | null>(null); // Add error state
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchAndSetPosts() {
@@ -35,7 +35,6 @@ export default function LatestBlog() {
                 const transformedPosts: PostCardProps[] = articles.map(
                     (article: NewsApiArticle) => {
                         if (!article.title || !article.source?.name) {
-                            // Skip articles with missing essential data
                             return null;
                         }
                         return {
@@ -49,13 +48,13 @@ export default function LatestBlog() {
                             content: article.content ?? undefined,
                         };
                     }
-                ).filter(Boolean) as PostCardProps[]; // Filter out nulls
+                ).filter(Boolean) as PostCardProps[];
 
                 setPosts(transformedPosts);
                 setError(null);
             } catch (e) {
                 console.error("Failed to fetch or transform blog posts:", e);
-                setError("Gagal memuat postingan blog."); // Set user-friendly error message
+                setError("Gagal memuat postingan blog.");
             } finally {
                 setLoading(false);
             }
@@ -64,17 +63,12 @@ export default function LatestBlog() {
         fetchAndSetPosts();
     }, []);
 
-    // Modify BlogList to handle loading and error states, or handle it here.
-    // Let's handle it here for simplicity.
     if (loading) {
-        // You can return a skeleton loader here for a better UX
         return (
-            <section id="blog" className="bg-white py-20 sm:py-28">
-                <div className="container mx-auto px-6">
-                <div className="flex justify-between items-center mb-12">
-                    <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Berita Terbaru</h2>
-                </div>
-                <p className="text-center text-gray-500">Memuat berita terbaru...</p>
+            <section id="blog" className="bg-gray-50 py-20 sm:py-28">
+                <div className="container mx-auto px-6 text-center">
+                    <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">Berita Terbaru</h2>
+                    <p className="text-gray-500">Memuat berita terbaru...</p>
                 </div>
             </section>
         );
@@ -82,12 +76,10 @@ export default function LatestBlog() {
     
     if (error) {
         return (
-            <section id="blog" className="bg-white py-20 sm:py-28">
-                 <div className="container mx-auto px-6">
-                 <div className="flex justify-between items-center mb-12">
-                    <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Berita Terbaru</h2>
-                </div>
-                <p className="text-center text-red-500">{error}</p>
+            <section id="blog" className="bg-gray-50 py-20 sm:py-28">
+                 <div className="container mx-auto px-6 text-center">
+                    <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">Berita Terbaru</h2>
+                    <p className="text-center text-red-500">{error}</p>
                 </div>
             </section>
         );
