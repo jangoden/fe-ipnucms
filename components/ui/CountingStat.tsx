@@ -24,9 +24,6 @@ const CountingStat: React.FC<CountingStatProps> = ({
   const animationFrameRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
 
-  // Easing function for smoother animation
-  const easeOutQuad = (t: number) => t * (2 - t);
-
   useEffect(() => {
     if (!inView) {
       return;
@@ -34,6 +31,9 @@ const CountingStat: React.FC<CountingStatProps> = ({
 
     // reset setiap kali effect jalan
     startTimeRef.current = null;
+
+    // Easing function for smoother animation
+    const easeOutQuad = (t: number) => t * (2 - t);
 
     // Extract numerical part from the value string (e.g., "2.500+" -> 2500)
     const targetValue = parseInt(value.replace(/\D/g, ""), 10);
@@ -71,7 +71,7 @@ const CountingStat: React.FC<CountingStatProps> = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [inView, value, duration, delay, easeOutQuad]);
+  }, [inView, value, duration, delay]);
 
   // Format the displayed number, adding back the non-numeric parts
   const formattedCount = new Intl.NumberFormat("id-ID").format(count);

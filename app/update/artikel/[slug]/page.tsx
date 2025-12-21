@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { PostCardProps } from "@/lib/types";
 
@@ -77,11 +78,13 @@ function ArticlePageContent() {
 
             <div className="space-y-4">
               <div className="flex items-center space-x-3 group">
-                <div className="w-16 h-12 rounded overflow-hidden bg-gray-200">
-                  <img
+                <div className="w-16 h-12 rounded overflow-hidden bg-gray-200 relative">
+                  <Image
                     src={post.imageUrl || "/images/placeholder-template.png"}
                     alt={post.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="64px"
+                    className="object-cover"
                   />
                 </div>
                 <p className="text-sm text-gray-700 group-hover:text-emerald-600 cursor-pointer line-clamp-2">
@@ -90,11 +93,13 @@ function ArticlePageContent() {
               </div>
               {/* Dummy related post */}
               <div className="flex items-center space-x-3 group">
-                <div className="w-16 h-12 rounded overflow-hidden bg-gray-200">
-                  <img
+                <div className="w-16 h-12 rounded overflow-hidden bg-gray-200 relative">
+                  <Image
                     src={"/images/placeholder-template.png"}
                     alt={"Contoh artikel lain"}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="64px"
+                    className="object-cover"
                   />
                 </div>
                 <p className="text-sm text-gray-700 group-hover:text-emerald-600 cursor-pointer line-clamp-2">

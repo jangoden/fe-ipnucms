@@ -1,5 +1,6 @@
 // components/pages/Stats.tsx
 "use client";
+import Image from "next/image";
 
 import { useEffect, useState } from 'react';
 import CountUp from 'react-countup';
@@ -22,9 +23,10 @@ export default function Stats() {
   return (
     <div className="relative isolate overflow-hidden bg-emerald-900 py-12 border-y border-emerald-800">
       {/* Background Image Texture (Optional for depth) */}
-      <img
+      <Image
         src="https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2029&auto=format&fit=crop"
         alt=""
+        fill
         className="absolute inset-0 -z-10 h-full w-full object-cover object-center opacity-10 mix-blend-overlay"
       />
       {/* Gradient Overlay */}
@@ -45,14 +47,14 @@ export default function Stats() {
               <div className="mb-3 rounded-lg bg-emerald-500/20 p-2 ring-1 ring-emerald-400/20">
                 <stat.icon className="h-6 w-6 text-emerald-300" />
               </div>
-              
+
               <dd className="text-3xl font-bold tracking-tight text-white mb-1">
                 {hasMounted ? (
                   <CountUp start={0} end={stat.value} duration={2.5} separator="." />
                 ) : '0'}
                 <span className="text-xl text-emerald-400 ml-0.5 align-top">{stat.suffix}</span>
               </dd>
-              
+
               <dt className="text-sm font-medium leading-6 text-emerald-100/80 uppercase tracking-wide">
                 {stat.name}
               </dt>

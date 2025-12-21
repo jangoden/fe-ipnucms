@@ -1,15 +1,15 @@
 // components/pages/History.tsx
 "use client";
 
-import { 
-    AcademicCapIcon,
-    ArrowTrendingUpIcon,
-    BeakerIcon,
-    FlagIcon, 
-    InformationCircleIcon, 
-    ScaleIcon, 
-    SparklesIcon,
-    UsersIcon
+import {
+
+  ArrowTrendingUpIcon,
+  BeakerIcon,
+  FlagIcon,
+  InformationCircleIcon,
+  ScaleIcon,
+  SparklesIcon,
+  UsersIcon
 } from '@heroicons/react/24/outline';
 
 const timelineData = [
@@ -64,7 +64,7 @@ const timelineData = [
     title: "Munculnya IPPNU",
     icon: UsersIcon,
     content: [
-        "Pada tahun 1955, setahun setelah IPNU berdiri, pelajar putri NU membentuk organisasi sendiri bernama IPPNU (Ikatan Pelajar Putri Nahdlatul Ulama) yang bergerak bersama IPNU dalam pembinaan pelajar putra-putri NU."
+      "Pada tahun 1955, setahun setelah IPNU berdiri, pelajar putri NU membentuk organisasi sendiri bernama IPPNU (Ikatan Pelajar Putri Nahdlatul Ulama) yang bergerak bersama IPNU dalam pembinaan pelajar putra-putri NU."
     ],
   },
   {
@@ -72,10 +72,10 @@ const timelineData = [
     title: "Identitas Organisasi",
     icon: BeakerIcon,
     content: [
-        "<strong>Asas:</strong> Ahlussunnah wal Jama’ah",
-        "<strong>Sifat:</strong> Organisasi pelajar yang bersifat sosial, kemasyarakatan, dan dakwah",
-        "<strong>Mars:</strong> “Bernaung di bawah panjimu yang suci…”",
-        "<strong>Lambang:</strong> Perisai hijau dengan bintang sembilan (simbol NU)"
+      "<strong>Asas:</strong> Ahlussunnah wal Jama’ah",
+      "<strong>Sifat:</strong> Organisasi pelajar yang bersifat sosial, kemasyarakatan, dan dakwah",
+      "<strong>Mars:</strong> “Bernaung di bawah panjimu yang suci…”",
+      "<strong>Lambang:</strong> Perisai hijau dengan bintang sembilan (simbol NU)"
     ],
   },
   {
@@ -83,11 +83,11 @@ const timelineData = [
     title: "Peran IPNU Saat Ini",
     icon: SparklesIcon,
     content: [
-        "IPNU berperan dalam:",
-        "• Membina pelajar di sekolah dan pesantren",
-        "• Mengembangkan pendidikan karakter, literasi, dan teknologi",
-        "• Menumbuhkan jiwa nasionalisme dan religius",
-        "• Menjadi jembatan kaderisasi menuju GP Ansor, PMII, dan struktur NU lainnya."
+      "IPNU berperan dalam:",
+      "• Membina pelajar di sekolah dan pesantren",
+      "• Mengembangkan pendidikan karakter, literasi, dan teknologi",
+      "• Menumbuhkan jiwa nasionalisme dan religius",
+      "• Menjadi jembatan kaderisasi menuju GP Ansor, PMII, dan struktur NU lainnya."
     ],
   }
 ];
@@ -117,7 +117,7 @@ export default function History() {
               <div className="absolute left-0 top-1 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 ring-8 ring-gray-50">
                 <item.icon className="h-6 w-6 text-white" aria-hidden="true" />
               </div>
-              
+
               {/* Content Card */}
               <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
                 <h2 className="text-2xl font-bold text-gray-800 mb-3">{item.title}</h2>

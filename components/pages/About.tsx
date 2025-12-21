@@ -6,7 +6,6 @@ import {
   ArrowRightIcon,
   BookOpenIcon,
   FlagIcon,
-  UserGroupIcon,
   AcademicCapIcon,
   EyeIcon,
   CheckCircleIcon,
