@@ -50,7 +50,7 @@ function ArticlePageContent() {
   return (
     <div className="min-h-screen bg-white py-10">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-4 lg:px-0">
-        
+
         {/* SIDEBAR KIRI - Now Sticky */}
         <aside className="md:col-span-1 space-y-8 self-start sticky top-24">
           {/* Breadcrumbs moved to sidebar */}
@@ -89,7 +89,7 @@ function ArticlePageContent() {
                 </p>
               </div>
               {/* Dummy related post */}
-               <div className="flex items-center space-x-3 group">
+              <div className="flex items-center space-x-3 group">
                 <div className="w-16 h-12 rounded overflow-hidden bg-gray-200">
                   <img
                     src={"/images/placeholder-template.png"}
@@ -107,11 +107,11 @@ function ArticlePageContent() {
 
         {/* KONTEN UTAMA */}
         <main className="md:col-span-3 rounded-lg p-6 lg:p-8">
-            <div className="space-y-8">
-                <PostHeader post={post} />
-                <PostBody post={post} />
-                <PostFooter post={post} shareUrl={shareUrl} />
-            </div>
+          <div className="space-y-8">
+            <PostHeader post={post} />
+            <PostBody post={post} />
+            <PostFooter post={post} shareUrl={shareUrl} />
+          </div>
         </main>
       </div>
     </div>

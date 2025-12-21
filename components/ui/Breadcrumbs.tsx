@@ -1,6 +1,7 @@
 // components/ui/Breadcrumbs.tsx
 import Link from "next/link";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import clsx from "clsx";
 
 type Crumb = {
   href: string;
@@ -9,11 +10,12 @@ type Crumb = {
 
 type BreadcrumbsProps = {
   crumbs: Crumb[];
+  className?: string;
 };
 
-export default function Breadcrumbs({ crumbs }: BreadcrumbsProps) {
+export default function Breadcrumbs({ crumbs, className }: BreadcrumbsProps) {
   return (
-    <nav className="flex" aria-label="Breadcrumb">
+    <nav className={clsx("flex", className)} aria-label="Breadcrumb">
       <ol role="list" className="flex items-center space-x-2">
         <li>
           <Link href="/" className="hover:opacity-75">
