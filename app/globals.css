@@ -10,12 +10,22 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-primary: #064e3b;
+  --color-primary-light: #10b981;
+  --color-primary-dark: #022c22;
+  --color-secondary: #F5F5DC;
+  --color-accent: #FFA500;
+  --color-accent-hover: #E69500;
+  --color-accent-light: #FFC04D;
+  --color-lightGray: #F3F4F6;
+  --color-darkGray: #374151;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #ffffff;
-      --foreground: #000000;
+    --foreground: #000000;
   }
 }
 
@@ -48,6 +58,7 @@ body {
     from {
       transform: translateX(0);
     }
+
     to {
       transform: translateX(-50%);
     }
@@ -57,43 +68,43 @@ body {
     animation: scroll 40s linear infinite;
   }
 
-    /* Line clamp utilities */
-    .line-clamp-1 {
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 1;
-      line-clamp: 1;
-    }
-  
-    .line-clamp-2 {
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
-    }
-  
-    .line-clamp-3 {
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
-      line-clamp: 3;
-    }
-  
-    /* Hide scrollbar utility */
-    .scrollbar-hide {
-      -ms-overflow-style: none;
-      /* IE and Edge */
-      scrollbar-width: none;
-      /* Firefox */
-    }
-  
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
-      /* Chrome, Safari and Opera */
-    }
+  /* Line clamp utilities */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  /* Hide scrollbar utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari and Opera */
+  }
 }
 
 /* globals.css */
@@ -131,6 +142,7 @@ body {
 .animation-delay-4000 {
   animation-delay: 4s;
 }
+
 html,
 body {
   width: 100%;
