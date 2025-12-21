@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { motion, AnimatePresence } from "framer-motion";
 
 type NavItem = {
   name: string;
@@ -41,18 +42,36 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null); // Track which dropdown is open
   const navRef = useRef<HTMLElement>(null); // Ref for desktop nav to handle outside clicks
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
+  // Handle Scroll
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Handle Route Change
   useEffect(() => {
-    setOpen(false); // Close mobile menu on route change
-    setDropdownOpen(null); // Close dropdowns on route change
+    setOpen(false);
+    setDropdownOpen(null);
   }, [pathname]);
+
+  // Handle Outside Click for Mobile Menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node) &&
+        open
+      ) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -68,249 +87,273 @@ export default function Navbar() {
       className={clsx(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-emerald-800/95 backdrop-blur-md shadow-md border-b border-black/10"
-          : "bg-emerald-700/95 backdrop-blur-md"
+          ? "bg-primary/95 backdrop-blur-md shadow-lg border-b border-primary-light/20 py-2"
+          : "bg-transparent py-4"
       )}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-3 sm:px-6 py-3">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link
           href="/"
           aria-label="Beranda"
-          className="flex shrink-0 items-center gap-2 transition-opacity duration-200 hover:opacity-80"
+          className="flex shrink-0 items-center gap-2 transition-opacity duration-200 hover:opacity-90"
         >
           <Image
             src="/images/logo.svg"
             alt="Logo PC IPNU CIAMIS"
-            width={30}
-            height={30}
-            className="h-9 w-auto"
+            width={50}
+            height={50}
+            className="h-[50px] w-[50px] object-contain"
           />
         </Link>
 
-        {/* Right-aligned group: Desktop nav, CTA, and mobile toggle */}
-        <div className="flex items-center gap-3">
-          {/* Desktop nav */}
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-1">
           <nav
             ref={navRef}
-            className="hidden items-center gap-1 md:flex"
+            className="flex items-center gap-1 p-1 rounded-full bg-black/10 backdrop-blur-sm border border-white/5"
             aria-label="Navigasi Utama"
           >
-            {navLinks.map((link) =>
-              link.children ? (
-                <div 
-                  key={link.name} 
-                  className="relative"
-                  onMouseEnter={() => setDropdownOpen(link.name)}
-                  onMouseLeave={() => setDropdownOpen(null)}
-                >
-                  <button
-                    className={clsx(
-                      "flex items-center",
-                      "relative rounded-full px-4 py-2 text-sm transition-all duration-200",
-                      "outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/50",
-                      isActive(link.href) ||
-                        link.children.some((child) => isActive(child.href)) ||
-                        dropdownOpen === link.name
-                        ? "bg-white text-emerald-900 font-semibold"
-                        : "text-white/90 hover:text-white hover:bg-white/15"
-                    )}
-                  >
-                    {link.name}
-                    <svg
-                      className={clsx(
-                        "ml-2 h-4 w-4 transform transition-transform duration-200",
-                        dropdownOpen === link.name ? "rotate-180" : "rotate-0"
-                      )}
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-                  {dropdownOpen === link.name && (
-                    <div className="absolute left-0 top-full pt-2 w-48 rounded-lg bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none overflow-hidden animate-fade-in-up">
-                      <div className="py-1">
-                        {link.children.map((childLink) => (
-                          <Link
-                            key={childLink.name}
-                            href={childLink.href}
-                            className={clsx(
-                              "block px-4 py-2 text-sm text-gray-700 transition-colors duration-200 hover:bg-emerald-100 hover:text-emerald-800",
-                              isActive(childLink.href) &&
-                                "bg-emerald-50 font-semibold text-emerald-700"
-                            )}
-                            onClick={() => setDropdownOpen(null)}
-                          >
-                            {childLink.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={clsx(
-                    "relative rounded-full px-4 py-2 text-sm transition-all duration-200",
-                    "outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/50",
-                    isActive(link.href)
-                      ? "bg-white text-emerald-900 font-semibold"
-                      : "text-white/90 hover:text-white hover:bg-white/15"
-                  )}
-                >
-                  {link.name}
-                </Link>
-              )
-            )}
-          </nav>
-
-          {/* CTA (Sirekan button) */}
-          <Link
-            href="#"
-            className="px-4 py-2 rounded-full bg-white text-emerald-800 font-semibold hover:bg-emerald-100 transition-colors duration-200 hidden sm:flex"
-          >
-            Sirekan
-          </Link>
-          
-          {/* Mobile toggle */}
-          <button
-            aria-label={open ? "Tutup menu" : "Buka menu"}
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-            className="relative grid h-10 w-10 place-items-center rounded-full border border-white/25 bg-white/15 text-white outline-none backdrop-blur-sm focus-visible:ring-2 focus-visible:ring-emerald-300/50 md:hidden"
-          >
-            {open ? (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M6 6l12 12M18 6L6 18"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            ) : (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M4 6h16M4 12h16M4 18h16"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile overlay + panel */}
-      <div
-        className={clsx(
-          "md:hidden",
-          open ? "pointer-events-auto" : "pointer-events-none"
-        )}
-      >
-        <div
-          onClick={() => setOpen(false)}
-          className={clsx(
-            "fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300",
-            open ? "opacity-100" : "opacity-0"
-          )}
-        />
-        <div
-          className={clsx(
-            "absolute left-0 top-full z-50 w-full origin-top bg-emerald-800 text-white shadow-xl transition-transform duration-300",
-            open ? "scale-y-100" : "scale-y-0"
-          )}
-        >
-          <nav className="flex flex-col gap-1 p-4" aria-label="Menu Mobile">
-            {navLinks.map((link) =>
-              link.children ? (
-                <div key={link.name}>
+            {navLinks.map((link) => (
+              <div
+                key={link.name}
+                className="relative group"
+                onMouseEnter={() => link.children && setDropdownOpen(link.name)}
+                onMouseLeave={() => link.children && setDropdownOpen(null)}
+              >
+                {link.children ? (
                   <button
                     onClick={() => handleDropdownToggle(link.name)}
                     className={clsx(
-                      "flex w-full items-center justify-between rounded-lg px-4 py-3 text-base transition-colors duration-200",
-                      "outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/50",
-                      (isActive(link.href) ||
+                      "flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+                      "outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                      isActive(link.href) ||
                         link.children.some((child) => isActive(child.href)) ||
-                        dropdownOpen === link.name)
-                        ? "bg-white/20"
-                        : "hover:bg-white/10 text-white/95"
+                        dropdownOpen === link.name
+                        ? "bg-white text-primary-dark shadow-sm"
+                        : "text-white hover:bg-white/10"
                     )}
                   >
                     {link.name}
                     <svg
                       className={clsx(
-                        "ml-2 h-4 w-4 transform transition-transform duration-200",
+                        "h-4 w-4 transition-transform duration-200",
                         dropdownOpen === link.name ? "rotate-180" : "rotate-0"
                       )}
-                      xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  {dropdownOpen === link.name && (
-                    <div className="mt-1 flex flex-col gap-1 pl-4 animate-fade-in-down">
-                      {link.children.map((childLink) => (
-                        <Link
-                          key={childLink.name}
-                          href={childLink.href}
-                          onClick={() => {
-                            setOpen(false);
-                            setDropdownOpen(null);
-                          }}
+                ) : (
+                  <Link
+                    href={link.href}
+                    className={clsx(
+                      "flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+                      "outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                      isActive(link.href)
+                        ? "bg-white text-primary-dark shadow-sm"
+                        : "text-white hover:bg-white/10"
+                    )}
+                  >
+                    {link.name}
+                  </Link>
+                )}
+
+                {/* Desktop Dropdown */}
+                <AnimatePresence>
+                  {link.children && dropdownOpen === link.name && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute left-0 top-full pt-2 w-48 z-50"
+                    >
+                      <div className="rounded-xl bg-white shadow-xl ring-1 ring-black/5 overflow-hidden p-1">
+                        {link.children.map((child) => (
+                          <Link
+                            key={child.name}
+                            href={child.href}
+                            className={clsx(
+                              "block px-4 py-2 text-sm rounded-lg transition-colors",
+                              isActive(child.href)
+                                ? "bg-primary/10 text-primary font-semibold"
+                                : "text-gray-700 hover:bg-gray-50 hover:text-primary"
+                            )}
+                          >
+                            {child.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </nav>
+
+          {/* CTA Button */}
+          <Link
+            href="/login"
+            className="ml-3 px-5 py-2.5 rounded-full bg-accent hover:bg-accent-hover text-white text-sm font-bold shadow-lg shadow-accent/20 transition-all duration-200 hover:shadow-accent/40 active:scale-95 hidden lg:flex"
+          >
+            Sirekan
+          </Link>
+        </div>
+
+        {/* Mobile Toggle */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="md:hidden relative z-50 p-2 text-white hover:bg-white/10 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
+          aria-label="Toggle menu"
+        >
+          <div className="w-6 h-6 flex flex-col justify-center gap-1.5">
+            <motion.span
+              animate={open ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
+              className="w-full h-0.5 bg-white rounded-full block origin-center transition-all"
+            />
+            <motion.span
+              animate={open ? { opacity: 0 } : { opacity: 1 }}
+              className="w-full h-0.5 bg-white rounded-full block transition-all"
+            />
+            <motion.span
+              animate={open ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+              className="w-full h-0.5 bg-white rounded-full block origin-center transition-all"
+            />
+          </div>
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Menu Panel */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            ref={mobileMenuRef}
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed right-0 top-0 bottom-0 w-[280px] bg-white z-50 shadow-2xl md:hidden overflow-y-auto"
+          >
+            <div className="p-6 flex flex-col h-full">
+              <div className="flex justify-between items-center mb-8">
+                <span className="text-xl font-bold text-primary-dark">Menu</span>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-2 flex-1">
+                {navLinks.map((link) => (
+                  <div key={link.name}>
+                    {link.children ? (
+                      <div className="group">
+                        <button
+                          onClick={() => handleDropdownToggle(link.name)}
                           className={clsx(
-                            "rounded-lg px-4 py-3 text-sm transition-colors duration-200",
-                            "outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/50",
-                            isActive(childLink.href)
-                              ? "bg-white/20"
-                              : "hover:bg-white/10 text-white/95"
+                            "w-full flex justify-between items-center p-3 rounded-xl text-left transition-colors",
+                            isActive(link.href) || dropdownOpen === link.name
+                              ? "bg-primary/5 text-primary font-semibold"
+                              : "text-gray-700 hover:bg-gray-50"
                           )}
                         >
-                          {childLink.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
+                          {link.name}
+                          <svg
+                            className={clsx(
+                              "w-4 h-4 transition-transform",
+                              dropdownOpen === link.name ? "rotate-180" : ""
+                            )}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        <AnimatePresence>
+                          {dropdownOpen === link.name && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="overflow-hidden bg-gray-50 rounded-b-xl"
+                            >
+                              <div className="p-2 space-y-1">
+                                {link.children.map((child) => (
+                                  <Link
+                                    key={child.name}
+                                    href={child.href}
+                                    onClick={() => setOpen(false)}
+                                    className={clsx(
+                                      "block p-3 rounded-lg text-sm transition-colors",
+                                      isActive(child.href)
+                                        ? "text-primary font-medium bg-white shadow-sm"
+                                        : "text-gray-600 hover:text-primary hover:bg-white/50"
+                                    )}
+                                  >
+                                    {child.name}
+                                  </Link>
+                                ))}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        onClick={() => setOpen(false)}
+                        className={clsx(
+                          "block p-3 rounded-xl text-base transition-colors",
+                          isActive(link.href)
+                            ? "bg-primary/5 text-primary font-semibold"
+                            : "text-gray-700 hover:bg-gray-50"
+                        )}
+                      >
+                        {link.name}
+                      </Link>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-gray-100">
                 <Link
-                  key={link.name}
-                  href={link.href}
+                  href="/login"
                   onClick={() => setOpen(false)}
-                  className={clsx(
-                    "rounded-lg px-4 py-3 text-base transition-colors duration-200",
-                    "outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/50",
-                    isActive(link.href)
-                      ? "bg-white/20"
-                      : "hover:bg-white/10 text-white/95"
-                  )}
+                  className="block w-full text-center py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/30 active:scale-95 transition-all"
                 >
-                  {link.name}
+                  Sirekan Login
                 </Link>
-              )
-            )}
-          </nav>
-        </div>
-      </div>
+                <p className="text-center text-xs text-gray-400 mt-4">
+                  &copy; 2025 PC IPNU Ciamis
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
