@@ -14,6 +14,7 @@ import {
   Lilita_One,
   Mouse_Memoirs,
   Style_Script,
+  Tangerine,
 } from "next/font/google";
 
 const inter = Inter({
@@ -79,6 +80,13 @@ const styleScript = Style_Script({
   display: "swap",
 });
 
+const tangerine = Tangerine({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-tangerine",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "PC IPNU CIAMIS",
   description:
@@ -105,6 +113,7 @@ export default function RootLayout({
         lilitaOne.variable,
         mouseMemoirs.variable,
         styleScript.variable,
+        tangerine.variable,
       ].join(" ")}
     >
       <body className={inter.className}>
